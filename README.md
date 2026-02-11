@@ -2,18 +2,6 @@
 
 A NestJS-based business service for Nepali Biz platform.
 
-## 📋 Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Database Setup](#database-setup)
-- [Testing Database Connection](#testing-database-connection)
-- [Development](#development)
-- [Available Scripts](#available-scripts)
-- [Project Structure](#project-structure)
-- [Environment Variables](#environment-variables)
-- [Team Collaboration](#team-collaboration)
-
 ## 🔧 Prerequisites
 
 Before you begin, ensure you have the following installed:
@@ -112,14 +100,6 @@ docker compose up nepali-biz-business-db -d
 yarn prisma:migrate
 ```
 
-### Database Connection Details
-
-- **Host**: localhost
-- **Port**: 5434 (mapped from container's 5432)
-- **Database**: nepali_biz_business
-- **Username**: postgres
-- **Password**: postgres
-
 ### Prisma Commands
 
 ```bash
@@ -137,70 +117,6 @@ yarn prisma:studio
 
 # Seed database
 yarn prisma:seed
-```
-
-## 🧪 Testing Database Connection
-
-### Quick Test
-
-```bash
-yarn test:db
-```
-
-### What Gets Tested
-
-The database connection test script validates:
-
-1. **Environment Variables**: Checks if `DATABASE_URL` is properly set
-2. **Connection**: Verifies connection to PostgreSQL
-3. **Query Execution**: Tests basic SQL queries
-4. **Database Version**: Retrieves PostgreSQL version
-5. **Migration Status**: Checks if migrations are applied
-6. **Table Access**: Verifies table accessibility
-7. **Write Operations**: Tests create/delete operations
-
-### Expected Output
-
-```
-🔍 Testing Database Connection...
-
-============================================================
-
-📋 Test 1: Environment Variable Check
-✅ PASSED: DATABASE_URL is set
-
-📋 Test 2: Database Connection
-✅ PASSED: Connected to database
-
-📋 Test 3: Execute Simple Query
-✅ PASSED: Query executed successfully
-
-📋 Test 4: Database Version Check
-✅ PASSED: Database version retrieved
-
-📋 Test 5: Migration Status Check
-✅ PASSED: Found 1 migration(s)
-
-📋 Test 6: Table Access Check
-✅ PASSED: Example table is accessible
-
-📋 Test 7: Write Operation Test
-✅ PASSED: Write operations working
-
-============================================================
-
-📊 Test Summary
-
-Total Tests: 7
-✅ Passed: 7
-❌ Failed: 0
-Success Rate: 100.0%
-
-============================================================
-
-✅ All database connection tests PASSED
-
-🎉 Your database is ready for team collaboration!
 ```
 
 ## 💻 Development
@@ -324,56 +240,6 @@ yarn test
 yarn prisma:migrate
 ```
 
-### For New Team Members
-
-1. **Clone the repository**
-2. **Install dependencies**: `yarn install`
-3. **Copy `.env.example` to `.env`**
-4. **Start the database**: `docker compose up nepali-biz-business-db -d`
-5. **Run migrations**: `yarn prisma:migrate`
-6. **Test database**: `yarn test:db`
-7. **Start development**: `yarn dev`
-
-### Common Issues
-
-#### Database Connection Failed
-
-```bash
-# Check if Docker is running
-docker ps
-
-# Restart database
-docker compose down
-docker compose up nepali-biz-business-db -d
-
-# Wait 10-15 seconds, then test
-yarn test:db
-```
-
-#### Port Already in Use
-
-If port 3001 or 5434 is already in use:
-
-1. Update `PORT` in `.env` (for application)
-2. Update port mapping in `docker-compose.yml` (for database)
-
-#### Migrations Not Applied
-
-```bash
-# Reset and reapply migrations
-docker compose down -v
-docker compose up nepali-biz-business-db -d
-yarn prisma:migrate
-```
-
-## 📚 API Documentation
-
-When `SWAGGER_ENABLED=true`, API documentation is available at:
-
-```
-http://localhost:3001/api/docs
-```
-
 ## 🏥 Health Check
 
 The application includes a health check endpoint:
@@ -386,15 +252,3 @@ This endpoint checks:
 
 - Application status
 - Database connectivity
-
-## 📝 License
-
-UNLICENSED - Private project for Nepali Biz Team
-
-## 👨‍💻 Authors
-
-Nepali Biz Team
-
----
-
-**Need Help?** Contact the team or check the project documentation.
