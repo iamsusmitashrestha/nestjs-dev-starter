@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*",
+    "prisma/**/*.ts",
+    "scripts/**/*.ts",
+    "test/**/*",
+    "**/*.spec.ts",
+    "**/*.e2e-spec.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
+

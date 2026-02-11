@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.next
+.nuxt
+.cache
+.turbo
+.vercel
+.output
+
+# Prisma
+prisma/migrations
+
