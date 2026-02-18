@@ -6,6 +6,7 @@ import appConfig from '@config/app.config';
 import { validationSchema } from '@config/validation.schema';
 import { DatabaseModule } from '@database/database.module';
 import { HealthModule } from '@modules/health/health.module';
+import { BusinessModule } from '@modules/business/business.module';
 import { AllExceptionsFilter } from '@common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
 import { TransformInterceptor } from '@common/interceptors/transform.interceptor';
@@ -26,6 +27,7 @@ import { RequestIdMiddleware } from '@common/middleware/request-id.middleware';
     ]),
     DatabaseModule,
     HealthModule,
+    BusinessModule,
   ],
   providers: [
     {
