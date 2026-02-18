@@ -7,11 +7,101 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example model – replace with real business models
-model Example {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Enums (align with Create Business form)
+
+enum BusinessEntityType {
+  COMPANY
+  INDIVIDUAL
 }
 
+enum WorkMode {
+  ON_SITE
+  REMOTE
+}
+
+enum ServiceProviderType {
+  BUSINESS_STAFF
+  BUSINESS_OWNER
+}
+
+// Category – reference list for Business Category dropdown
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String
+  slug      String?    @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  businesses Business[]
+}
+
+model Business {
+  id                   String               @id @default(uuid())
+  ownerId              String               // User ID from User Service
+  name                 String
+  description          String               @db.Text
+  categoryId           String
+  category             Category             @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  
+  // Business Type & Work Mode
+  entityType           BusinessEntityType
+  workMode             WorkMode
+  serviceProviderType  ServiceProviderType
+  
+  // Contact Information
+  email                String?
+  phoneNumber          String?
+  websiteUrl           String?
+  
+  // Detailed Location
+  addressLine1         String?
+  addressLine2         String?
+  city                 String?
+  state                String?
+  postalCode           String?
+  country              String              @default("Nepal")
+  latitude             Float?
+  longitude            Float?
+  location             String?             // Keep for backward compatibility
+  
+  // Operating Hours & Status
+  operatingHours       Json?               // { mon: { start: "09:00", end: "17:00" }, ... }
+  isOpen               Boolean             @default(true)
+  
+  teamSize             Int                 @default(1)
+  
+  // Visibility Settings
+  showRatingsReviews   Boolean             @default(true)
+  showTeamPublicly     Boolean             @default(true)
+  showHoursOnProfile   Boolean             @default(true)
+  
+  // Media
+  profileImageUrl      String?
+  coverImageUrl        String?
+  
+  // Statistics & Metrics
+  totalViews           Int                 @default(0)
+  totalBookings        Int                 @default(0)
+  averageRating        Float               @default(0)
+  totalReviews         Int                 @default(0)
+
+  isActive             Boolean             @default(true)
+  isPremium            Boolean             @default(false)
+  isFeatured           Boolean             @default(false)
+  
+  // Settings
+  timezone             String              @default("Asia/Kathmandu")
+  currency             String              @default("NPR")
+  
+  // Timestamps
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  
+  @@index([ownerId])
+  @@index([categoryId])
+  @@index([city, state])              
+  @@index([latitude, longitude])      
+  @@index([isActive])                 
+  @@index([isPremium])                
+  @@index([isFeatured])               
+}
