@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Membership and roles (auth in the middle: JWT from Core, membership in this DB)
+
+enum BusinessRole {
+  OWNER
+}
+
+enum MembershipStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
+
 // Enums (align with Create Business form)
 
 enum BusinessEntityType {
@@ -24,8 +36,6 @@ enum ServiceProviderType {
   BUSINESS_OWNER
 }
 
-// Category – reference list for Business Category dropdown
-
 model Category {
   id        String     @id @default(uuid())
   name      String
@@ -35,9 +45,24 @@ model Category {
   businesses Business[]
 }
 
+model BusinessMembership {
+  id         String          @id @default(uuid())
+  businessId String
+  userId     String          // User ID from Core (no FK; different DB)
+  role       BusinessRole
+  status     MembershipStatus @default(ACTIVE)
+  business   Business        @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([businessId, userId])
+  @@index([businessId])
+  @@index([userId])
+}
+
 model Business {
   id                   String               @id @default(uuid())
-  ownerId              String               // User ID from User Service
+  ownerId              String               // User ID from Core Service
   name                 String
   description          String               @db.Text
   categoryId           String
@@ -59,7 +84,7 @@ model Business {
   city                 String?
   state                String?
   postalCode           String?
-  country              String              @default("Nepal")
+  country              String              @default("Australia")
   latitude             Float?
   longitude            Float?
   location             String?             // Keep for backward compatibility
@@ -90,13 +115,15 @@ model Business {
   isFeatured           Boolean             @default(false)
   
   // Settings
-  timezone             String              @default("Asia/Kathmandu")
-  currency             String              @default("NPR")
+  timezone             String              @default("UTC")
+  currency             String              @default("AUD")
   
   // Timestamps
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
-  
+
+  memberships          BusinessMembership[]
+
   @@index([ownerId])
   @@index([categoryId])
   @@index([city, state])              
