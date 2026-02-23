@@ -14,6 +14,9 @@ export const validationSchema = Joi.object({
   // Database
   DATABASE_URL: Joi.string().required(),
 
+  // JWT (must match Core's JWT_ACCESS_SECRET to verify tokens)
+  JWT_ACCESS_SECRET: Joi.string().required(),
+
   // Rate Limiting
   THROTTLE_TTL: Joi.number().default(60),
   THROTTLE_LIMIT: Joi.number().default(10),

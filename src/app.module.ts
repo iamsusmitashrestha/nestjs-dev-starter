@@ -1,8 +1,10 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import appConfig from '@config/app.config';
+import jwtConfig from '@config/jwt.config';
 import { validationSchema } from '@config/validation.schema';
 import { DatabaseModule } from '@database/database.module';
 import { HealthModule } from '@modules/health/health.module';
@@ -16,8 +18,17 @@ import { RequestIdMiddleware } from '@common/middleware/request-id.middleware';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig],
+      load: [appConfig, jwtConfig],
       validationSchema,
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('jwt.accessSecret'),
+        signOptions: {},
+      }),
+      inject: [ConfigService],
     }),
     ThrottlerModule.forRoot([
       {
