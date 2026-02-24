@@ -26,11 +26,8 @@ const categories = [
 ];
 
 async function main() {
-  // eslint-disable-next-line no-console
-  console.log('🌱 Seeding business categories...');
-
   for (const category of categories) {
-    const upserted = await prisma.category.upsert({
+    await prisma.category.upsert({
       where: { slug: category.slug },
       update: { name: category.name },
       create: {
@@ -38,18 +35,11 @@ async function main() {
         slug: category.slug,
       },
     });
-
-    // eslint-disable-next-line no-console
-    console.log(`✅ Category seeded: ${upserted.name} (${upserted.slug})`);
   }
-
-  // eslint-disable-next-line no-console
-  console.log(`\n🎉 Seeding complete. ${categories.length} categories seeded.`);
 }
 
 main()
   .catch((e) => {
-    // eslint-disable-next-line no-console
     console.error(e);
     process.exit(1);
   })
