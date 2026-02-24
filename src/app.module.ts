@@ -1,11 +1,14 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import appConfig from '@config/app.config';
+import jwtConfig from '@config/jwt.config';
 import { validationSchema } from '@config/validation.schema';
 import { DatabaseModule } from '@database/database.module';
 import { HealthModule } from '@modules/health/health.module';
+import { BusinessModule } from '@modules/business/business.module';
 import { AllExceptionsFilter } from '@common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
 import { TransformInterceptor } from '@common/interceptors/transform.interceptor';
@@ -15,8 +18,20 @@ import { RequestIdMiddleware } from '@common/middleware/request-id.middleware';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig],
+      load: [appConfig, jwtConfig],
       validationSchema,
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        // RS256: verify-only — this service never signs tokens.
+        publicKey: config.get<string>('jwt.publicKey'),
+        verifyOptions: {
+          algorithms: ['RS256'],
+        },
+      }),
+      inject: [ConfigService],
     }),
     ThrottlerModule.forRoot([
       {
@@ -26,6 +41,7 @@ import { RequestIdMiddleware } from '@common/middleware/request-id.middleware';
     ]),
     DatabaseModule,
     HealthModule,
+    BusinessModule,
   ],
   providers: [
     {
