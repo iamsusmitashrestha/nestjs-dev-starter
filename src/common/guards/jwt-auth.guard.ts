@@ -37,13 +37,16 @@ export class JwtAuthGuard implements CanActivate {
       throw new AppUnauthorizedException('Missing or invalid authorization header.');
     }
 
-    const secret = this.configService.get<string>('jwt.accessSecret');
-    if (!secret) {
-      throw new Error('JWT_ACCESS_SECRET is not configured; cannot verify tokens.');
+    const publicKey = this.configService.get<string>('jwt.publicKey');
+    if (!publicKey) {
+      throw new Error('JWT_PUBLIC_KEY is not configured; cannot verify tokens.');
     }
 
     try {
-      const payload = this.jwtService.verify<JwtPayload>(token, { secret });
+      const payload = this.jwtService.verify<JwtPayload>(token, {
+        algorithms: ['RS256'],
+        publicKey,
+      });
       const globalRole: GlobalRole =
         payload.role === 'ADMIN' || payload.role === 'SUPERADMIN'
           ? (payload.role as GlobalRole)

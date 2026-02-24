@@ -25,8 +25,11 @@ import { RequestIdMiddleware } from '@common/middleware/request-id.middleware';
       global: true,
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('jwt.accessSecret'),
-        signOptions: {},
+        // RS256: verify-only — this service never signs tokens.
+        publicKey: config.get<string>('jwt.publicKey'),
+        verifyOptions: {
+          algorithms: ['RS256'],
+        },
       }),
       inject: [ConfigService],
     }),

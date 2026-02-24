@@ -2,9 +2,10 @@ import { registerAs } from '@nestjs/config';
 
 /**
  * JWT config for verifying tokens issued by Core (NepaliBizzBackend).
- * Use the same JWT_ACCESS_SECRET as Core so this service can verify Bearer tokens.
+ * This service verifies RS256 tokens using Core's public key only.
+ * JWT_PRIVATE_KEY is NOT present here — this service never signs tokens.
  */
 export default registerAs('jwt', () => ({
-  /** Must match Core's JWT_ACCESS_SECRET. */
-  accessSecret: process.env.JWT_ACCESS_SECRET,
+  /** Core's RSA public key (PEM) for RS256 token verification. */
+  publicKey: process.env.JWT_PUBLIC_KEY?.replace(/\\n/g, '\n'),
 }));
