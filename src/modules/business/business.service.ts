@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '@database/prisma.service';
 import { ForbiddenException } from '@common/exceptions/forbidden.exception';
 import { ConflictException } from '@common/exceptions/conflict.exception';
+import { toJsonValue } from '@common/helpers/prisma.helper';
 import type { AuthUser } from '@common/types/express';
 import type { ApiResponse } from '@common/types/api-response';
 import { CreateBusinessDto } from './dto/create-business.dto';
@@ -65,6 +66,10 @@ export class BusinessService {
           email: dto.email,
           phoneNumber: dto.phoneNumber,
           country: dto.country,
+          operatingTime: toJsonValue(dto.operatingTime),
+          showRatingsReviews: dto.showRatingsReviews,
+          showTeamPublicly: dto.showTeamPublicly,
+          showHoursOnProfile: dto.showHoursOnProfile,
           memberships: {
             create: {
               userId,
@@ -137,8 +142,6 @@ export class BusinessService {
     return { message: BUSINESS_MESSAGES.LIST_BY_OWNER_OK, data };
   }
 
-  // ── Private helpers ─────────────────────────────────────────────────────────
-
   private async validateCategory(categoryId: string): Promise<void> {
     const category = await this.prisma.category.findUnique({
       where: { id: categoryId },
@@ -168,7 +171,10 @@ export class BusinessService {
       description: dto?.description,
       email: dto?.email,
       phoneNumber: dto?.phoneNumber,
-      isOpen: dto?.isOpen,
+      operatingTime: dto?.operatingTime ? toJsonValue(dto.operatingTime) : undefined,
+      showRatingsReviews: dto?.showRatingsReviews,
+      showTeamPublicly: dto?.showTeamPublicly,
+      showHoursOnProfile: dto?.showHoursOnProfile,
     };
   }
 
