@@ -19,8 +19,6 @@ enum MembershipStatus {
   SUSPENDED
 }
 
-// Enums (align with Create Business form)
-
 enum BusinessEntityType {
   COMPANY
   INDIVIDUAL
@@ -88,11 +86,7 @@ model Business {
   latitude             Float?
   longitude            Float?
   location             String?             // Keep for backward compatibility
-  
-  // Operating Hours & Status
-  operatingHours       Json?               // { mon: { start: "09:00", end: "17:00" }, ... }
-  isOpen               Boolean             @default(true)
-  
+  operatingTime       Json?               // { mon: { start: "09:00", end: "17:00" ,isOpen:true}, ... }
   teamSize             Int                 @default(1)
   
   // Visibility Settings
