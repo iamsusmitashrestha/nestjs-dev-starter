@@ -10,7 +10,7 @@ import {
   IsEnum,
   IsBoolean,
   ValidateIf,
-  IsObject,
+  IsUrl,
   ValidateNested,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
@@ -21,12 +21,8 @@ import {
 } from '../business.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OperatingTimeDto } from './operating-time.dto';
-
-const trimString = ({ value }: { value: unknown }) =>
-  typeof value === 'string' ? value.trim() : value;
-
-const trimLowerString = ({ value }: { value: unknown }) =>
-  typeof value === 'string' ? value.trim().toLowerCase() : value;
+import { LocationDto } from './location.dto';
+import { trimLowerString, trimString } from '@/common/utils/string';
 
 export class DayOperatingHoursDto {
   @IsBoolean()
@@ -110,6 +106,25 @@ export class CreateBusinessDto {
   @Transform(trimString)
   @ApiProperty()
   country?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => LocationDto)
+  @ApiPropertyOptional({
+    description: 'Location selected from the map popup. Contains display address + lat/lng.',
+    type: () => LocationDto,
+  })
+  location?: LocationDto;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'profileImageUrl must be a valid URL.' })
+  @ApiPropertyOptional({ description: 'URL to the business profile image' })
+  profileImageUrl?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'coverImageUrl must be a valid URL.' })
+  @ApiPropertyOptional({ description: 'URL to the business cover image' })
+  coverImageUrl?: string;
 
   @IsOptional()
   @ValidateNested()
