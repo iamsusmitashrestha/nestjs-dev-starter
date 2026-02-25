@@ -19,7 +19,8 @@ import {
   BusinessServiceProviderType,
   BusinessWorkMode,
 } from '../business.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { OperatingTimeDto } from './operating-time.dto';
 
 const trimString = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() : value;
@@ -110,11 +111,11 @@ export class CreateBusinessDto {
   @ApiProperty()
   country?: string;
 
-  @IsObject()
-  @ValidateNested({ each: true })
-  @Type(() => DayOperatingHoursDto)
-  @ApiProperty()
-  operatingTime: Record<string, DayOperatingHoursDto>;
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OperatingTimeDto)
+  @ApiPropertyOptional()
+  operatingTime?: OperatingTimeDto;
 
   @IsBoolean()
   @ApiProperty()

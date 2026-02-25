@@ -12,7 +12,8 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { DayOperatingHoursDto } from './create-business.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { OperatingTimeDto } from './operating-time.dto';
 
 const trimString = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() : value;
@@ -60,21 +61,24 @@ export class UpdateBusinessDto {
   @IsBoolean({ message: 'isOpen must be a boolean.' })
   isOpen?: boolean;
 
-  @IsObject()
-  @ValidateNested({ each: true })
-  @Type(() => DayOperatingHoursDto)
-  @ApiProperty()
-  operatingTime: Record<string, DayOperatingHoursDto>;
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OperatingTimeDto)
+  @ApiPropertyOptional()
+  operatingTime?: OperatingTimeDto;
 
+  @IsOptional()
   @IsBoolean()
-  @ApiProperty()
-  showRatingsReviews: boolean;
+  @ApiPropertyOptional()
+  showRatingsReviews?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  @ApiProperty()
-  showTeamPublicly: boolean;
+  @ApiPropertyOptional()
+  showTeamPublicly?: boolean;
 
+  @IsOptional()
   @IsBoolean()
-  @ApiProperty()
-  showHoursOnProfile: boolean;
+  @ApiPropertyOptional()
+  showHoursOnProfile?: boolean;
 }
