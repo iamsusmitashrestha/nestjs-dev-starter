@@ -9,13 +9,9 @@ import type { ApiResponse } from '@common/types/api-response';
 import { CreateBusinessDto } from './dto/create-business.dto';
 import { UpdateBusinessDto } from './dto/update-business.dto';
 import type { BusinessSummary, CreateBusinessData } from './business.interfaces';
-import {
-  BUSINESS_CONTEXT_TYPE,
-  BUSINESS_MESSAGES,
-  GlobalRole,
-  MembershipRole,
-  MembershipStatus,
-} from './business.constants';
+import { BUSINESS_CONTEXT_TYPE } from './business.constants';
+import { GlobalRole, MembershipRole, MembershipStatus } from '@common/constants/common';
+import { RESPONSE_MESSAGES } from '@common/constants/message';
 
 @Injectable()
 export class BusinessService {
@@ -39,7 +35,7 @@ export class BusinessService {
       }),
     );
 
-    return { message: BUSINESS_MESSAGES.LIST_OK, data };
+    return { message: RESPONSE_MESSAGES.OK, data };
   }
 
   /**
@@ -96,7 +92,7 @@ export class BusinessService {
           contextId: business.id,
         },
       };
-      return { message: BUSINESS_MESSAGES.CREATED, data };
+      return { message: RESPONSE_MESSAGES.BUSINESS_CREATED, data };
     } catch (error) {
       throw error;
     }
@@ -117,7 +113,7 @@ export class BusinessService {
 
     const updated = await this.applyBusinessUpdate(businessId, dto);
     this.logger.log(`Business updated businessId=${businessId} ownerId=${user.id}`);
-    return { message: BUSINESS_MESSAGES.UPDATED, data: updated };
+    return { message: RESPONSE_MESSAGES.BUSINESS_UPDATED, data: updated };
   }
 
   /**
@@ -131,7 +127,7 @@ export class BusinessService {
     if (!business) {
       throw new NotFoundException('Business not found.');
     }
-    return { message: BUSINESS_MESSAGES.OWNERSHIP_OK, data: { ownerId: business.ownerId } };
+    return { message: RESPONSE_MESSAGES.OK, data: { ownerId: business.ownerId } };
   }
 
   /**
@@ -144,7 +140,7 @@ export class BusinessService {
       orderBy: { createdAt: 'desc' },
     });
     const data: BusinessSummary[] = businesses.map((b) => ({ id: b.id, name: b.name }));
-    return { message: BUSINESS_MESSAGES.LIST_BY_OWNER_OK, data };
+    return { message: RESPONSE_MESSAGES.OK, data };
   }
 
   private async validateCategory(categoryId: string): Promise<void> {
